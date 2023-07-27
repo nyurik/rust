@@ -567,7 +567,7 @@ impl<'tcx> Visitor<'tcx> for Checker<'_, 'tcx> {
                 } else if ty.is_floating_point() {
                     self.check_op(ops::FloatingPointOp);
                 } else {
-                    span_bug!(self.span, "non-primitive type in `Rvalue::UnaryOp`: {:?}", ty);
+                    span_bug!(self.span, "non-primitive type in `Rvalue::UnaryOp`: {ty:?}");
                 }
             }
 
@@ -715,7 +715,7 @@ impl<'tcx> Visitor<'tcx> for Checker<'_, 'tcx> {
                         return;
                     }
                     _ => {
-                        span_bug!(terminator.source_info.span, "invalid callee of type {:?}", fn_ty)
+                        span_bug!(terminator.source_info.span, "invalid callee of type {fn_ty:?}")
                     }
                 };
 

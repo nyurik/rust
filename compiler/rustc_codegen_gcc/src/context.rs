@@ -479,7 +479,7 @@ impl<'gcc, 'tcx> LayoutOfHelpers<'tcx> for CodegenCx<'gcc, 'tcx> {
         if let LayoutError::SizeOverflow(_) | LayoutError::ReferencesError(_) = err {
             self.sess().emit_fatal(respan(span, err.into_diagnostic()))
         } else {
-            span_bug!(span, "failed to get layout for `{}`: {}", ty, err)
+            span_bug!(span, "failed to get layout for `{ty}`: {err}")
         }
     }
 }

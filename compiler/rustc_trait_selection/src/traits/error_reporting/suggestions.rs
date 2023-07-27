@@ -695,7 +695,8 @@ impl<'tcx> TypeErrCtxtExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
                                 term
                             );
                         } else {
-                            constraint.push_str(&format!("<{name} = {term}>"));
+                            use std::fmt::Write as _;
+                            write!(constraint, "<{name} = {term}>").unwrap();
                         }
                     }
 
@@ -1829,8 +1830,7 @@ impl<'tcx> TypeErrCtxtExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
             err.span_label(
                 expr.span,
                 format!(
-                    "this expression has type `{}`, which implements `{}`",
-                    ty,
+                    "this expression has type `{ty}`, which implements `{}`",
                     trait_pred.print_modifiers_and_trait_path()
                 )
             );
@@ -3051,31 +3051,43 @@ impl<'tcx> TypeErrCtxtExt<'tcx> for TypeErrCtxt<'_, 'tcx> {
                                 err.span_note(self.tcx.def_span(def_id), msg)
                             }
                             ty::GeneratorWitness(bound_tys) => {
-                                use std::fmt::Write;
+                                use std::fmt::Write as _;
 
                                 // FIXME: this is kind of an unusual format for rustc, can we make it more clear?
                                 // Maybe we should just remove this note altogether?
                                 // FIXME: only print types which don't meet the trait requirement
                                 let mut msg =
                                     "required because it captures the following types: ".to_owned();
+                                let mut is_first = true;
                                 for ty in bound_tys.skip_binder() {
-                                    with_forced_trimmed_paths!(write!(msg, "`{ty}`, ").unwrap());
+                                    if is_first {
+                                        is_first = false;
+                                    } else {
+                                        write!(msg, ", ").unwrap();
+                                    }
+                                    with_forced_trimmed_paths!(write!(msg, "`{ty}`").unwrap());
                                 }
-                                err.note(msg.trim_end_matches(", ").to_string())
+                                err.note(msg)
                             }
                             ty::GeneratorWitnessMIR(def_id, args) => {
-                                use std::fmt::Write;
+                                use std::fmt::Write as _;
 
                                 // FIXME: this is kind of an unusual format for rustc, can we make it more clear?
                                 // Maybe we should just remove this note altogether?
                                 // FIXME: only print types which don't meet the trait requirement
                                 let mut msg =
                                     "required because it captures the following types: ".to_owned();
+                                let mut is_first = true;
                                 for bty in tcx.generator_hidden_types(*def_id) {
                                     let ty = bty.instantiate(tcx, args);
-                                    write!(msg, "`{ty}`, ").unwrap();
+                                    if is_first {
+                                        is_first = false;
+                                    } else {
+                                        write!(msg, ", ").unwrap();
+                                    }
+                                    write!(msg, "`{ty}`").unwrap();
                                 }
-                                err.note(msg.trim_end_matches(", ").to_string())
+                                err.note(msg)
                             }
                             ty::Generator(def_id, _, _) => {
                                 let sp = self.tcx.def_span(def_id);

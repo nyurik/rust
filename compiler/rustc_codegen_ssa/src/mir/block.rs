@@ -941,7 +941,7 @@ impl<'a, 'tcx, Bx: BuilderMethods<'a, 'tcx>> FunctionCx<'a, 'tcx, Bx> {
                                 }
                             }
 
-                            span_bug!(span, "receiver has no non-zero-sized fields {:?}", op);
+                            span_bug!(span, "receiver has no non-zero-sized fields {op:?}");
                         }
 
                         // now that we have `*dyn Trait` or `&dyn Trait`, split it up into its
@@ -983,13 +983,13 @@ impl<'a, 'tcx, Bx: BuilderMethods<'a, 'tcx>> FunctionCx<'a, 'tcx, Bx> {
                                 }
                             }
 
-                            span_bug!(span, "receiver has no non-zero-sized fields {:?}", op);
+                            span_bug!(span, "receiver has no non-zero-sized fields {op:?}");
                         }
 
                         // Make sure that we've actually unwrapped the rcvr down
                         // to a pointer or ref to `dyn* Trait`.
                         if !op.layout.ty.builtin_deref(true).unwrap().ty.is_dyn_star() {
-                            span_bug!(span, "can't codegen a virtual call on {:#?}", op);
+                            span_bug!(span, "can't codegen a virtual call on {op:#?}");
                         }
                         let place = op.deref(bx.cx());
                         let data_ptr = place.project_field(bx, 0);
@@ -1005,7 +1005,7 @@ impl<'a, 'tcx, Bx: BuilderMethods<'a, 'tcx>> FunctionCx<'a, 'tcx, Bx> {
                         continue;
                     }
                     _ => {
-                        span_bug!(span, "can't codegen a virtual call on {:#?}", op);
+                        span_bug!(span, "can't codegen a virtual call on {op:#?}");
                     }
                 }
             }

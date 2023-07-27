@@ -249,7 +249,7 @@ impl<'tcx> Validator<'_, 'tcx> {
                         Q::in_any_value_of_ty(&self.ccx, return_ty)
                     }
                     kind => {
-                        span_bug!(terminator.source_info.span, "{:?} not promotable", kind);
+                        span_bug!(terminator.source_info.span, "{kind:?} not promotable");
                     }
                 }
             }
@@ -290,7 +290,7 @@ impl<'tcx> Validator<'_, 'tcx> {
                             }
                             TerminatorKind::Yield { .. } => Err(Unpromotable),
                             kind => {
-                                span_bug!(terminator.source_info.span, "{:?} not promotable", kind);
+                                span_bug!(terminator.source_info.span, "{kind:?} not promotable");
                             }
                         }
                     }
@@ -738,7 +738,7 @@ impl<'a, 'tcx> Promoter<'a, 'tcx> {
                 location
             }
             state => {
-                span_bug!(self.promoted.span, "{:?} not promotable: {:?}", temp, state);
+                span_bug!(self.promoted.span, "{temp:?} not promotable: {state:?}");
             }
         };
         if !self.keep_original {
@@ -759,7 +759,7 @@ impl<'a, 'tcx> Promoter<'a, 'tcx> {
             let (mut rvalue, source_info) = {
                 let statement = &mut self.source[loc.block].statements[loc.statement_index];
                 let StatementKind::Assign(box (_, rhs)) = &mut statement.kind else {
-                    span_bug!(statement.source_info.span, "{:?} is not an assignment", statement);
+                    span_bug!(statement.source_info.span, "{statement:?} is not an assignment");
                 };
 
                 (
@@ -787,7 +787,7 @@ impl<'a, 'tcx> Promoter<'a, 'tcx> {
                 let target = match &terminator.kind {
                     TerminatorKind::Call { target: Some(target), .. } => *target,
                     kind => {
-                        span_bug!(terminator.source_info.span, "{:?} not promotable", kind);
+                        span_bug!(terminator.source_info.span, "{kind:?} not promotable");
                     }
                 };
                 Terminator {
@@ -823,7 +823,7 @@ impl<'a, 'tcx> Promoter<'a, 'tcx> {
                     };
                 }
                 kind => {
-                    span_bug!(terminator.source_info.span, "{:?} not promotable", kind);
+                    span_bug!(terminator.source_info.span, "{kind:?} not promotable");
                 }
             };
         };

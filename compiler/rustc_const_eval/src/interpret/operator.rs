@@ -76,7 +76,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
             Le => l <= r,
             Gt => l > r,
             Ge => l >= r,
-            _ => span_bug!(self.cur_span(), "Invalid operation on char: {:?}", bin_op),
+            _ => span_bug!(self.cur_span(), "Invalid operation on char: {bin_op:?}"),
         };
         (Scalar::from_bool(res), false, self.tcx.types.bool)
     }
@@ -99,7 +99,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
             BitAnd => l & r,
             BitOr => l | r,
             BitXor => l ^ r,
-            _ => span_bug!(self.cur_span(), "Invalid operation on bool: {:?}", bin_op),
+            _ => span_bug!(self.cur_span(), "Invalid operation on bool: {bin_op:?}"),
         };
         (Scalar::from_bool(res), false, self.tcx.types.bool)
     }
@@ -125,7 +125,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
             Mul => ((l * r).value.into(), ty),
             Div => ((l / r).value.into(), ty),
             Rem => ((l % r).value.into(), ty),
-            _ => span_bug!(self.cur_span(), "invalid float op: `{:?}`", bin_op),
+            _ => span_bug!(self.cur_span(), "invalid float op: `{bin_op:?}`"),
         };
         (val, false, ty)
     }
@@ -453,7 +453,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                 let val = val.to_bool()?;
                 let res = match un_op {
                     Not => !val,
-                    _ => span_bug!(self.cur_span(), "Invalid bool op {:?}", un_op),
+                    _ => span_bug!(self.cur_span(), "Invalid bool op {un_op:?}"),
                 };
                 Ok((Scalar::from_bool(res), false, self.tcx.types.bool))
             }
@@ -461,7 +461,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                 let res = match (un_op, fty) {
                     (Neg, FloatTy::F32) => Scalar::from_f32(-val.to_f32()?),
                     (Neg, FloatTy::F64) => Scalar::from_f64(-val.to_f64()?),
-                    _ => span_bug!(self.cur_span(), "Invalid float op {:?}", un_op),
+                    _ => span_bug!(self.cur_span(), "Invalid float op {un_op:?}"),
                 };
                 Ok((res, false, layout.ty))
             }

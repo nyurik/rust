@@ -231,8 +231,7 @@ impl<'a, 'tcx> PatCtxt<'a, 'tcx> {
                     }
                     None => {
                         let msg = format!(
-                            "found bad range pattern `{:?}` outside of error recovery",
-                            (&lo, &hi),
+                            "found bad range pattern `({lo:?}, {hi:?})` outside of error recovery"
                         );
                         self.tcx.sess.delay_span_bug(pat.span, msg);
                         PatKind::Wild
@@ -267,7 +266,7 @@ impl<'a, 'tcx> PatCtxt<'a, 'tcx> {
 
             hir::PatKind::Tuple(ref pats, ddpos) => {
                 let ty::Tuple(ref tys) = ty.kind() else {
-                    span_bug!(pat.span, "unexpected type for tuple pattern: {:?}", ty);
+                    span_bug!(pat.span, "unexpected type for tuple pattern: {ty:?}");
                 };
                 let subpatterns = self.lower_tuple_subpats(pats, tys.len(), ddpos);
                 PatKind::Leaf { subpatterns }

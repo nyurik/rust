@@ -2591,7 +2591,7 @@ fn show_candidates(
                 // from the directly following item.
                 let additional_newline = if let FoundUse::No = found_use && let DiagnosticMode::Normal = mode { "\n" } else { "" };
                 candidate.0 =
-                    format!("{add_use}{}{append}{trailing}{additional_newline}", &candidate.0);
+                    format!("{add_use}{}{append}{trailing}{additional_newline}", candidate.0);
             }
 
             err.span_suggestions_with_style(

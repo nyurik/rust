@@ -107,7 +107,7 @@ pub(crate) fn eval_mir_constant<'tcx>(
                 fx.tcx.sess.span_err(constant.span, "erroneous constant encountered");
             }
             ErrorHandled::TooGeneric => {
-                span_bug!(constant.span, "codegen encountered polymorphic constant: {:?}", err);
+                span_bug!(constant.span, "codegen encountered polymorphic constant: {err:?}");
             }
         })
         .ok();

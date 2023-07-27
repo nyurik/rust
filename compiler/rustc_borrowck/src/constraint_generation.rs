@@ -71,7 +71,7 @@ impl<'cg, 'tcx> Visitor<'tcx> for ConstraintGeneration<'cg, 'tcx> {
             | TyContext::YieldTy(SourceInfo { span, .. })
             | TyContext::UserTy(span)
             | TyContext::LocalDecl { source_info: SourceInfo { span, .. }, .. } => {
-                span_bug!(span, "should not be visiting outside of the CFG: {:?}", ty_context);
+                span_bug!(span, "should not be visiting outside of the CFG: {ty_context:?}");
             }
             TyContext::Location(location) => {
                 self.add_regular_live_constraint(ty, location);
