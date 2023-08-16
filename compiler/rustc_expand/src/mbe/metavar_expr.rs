@@ -134,11 +134,11 @@ fn parse_ident<'sess>(
         let token_str = pprust::token_to_string(token);
         let mut err = sess.span_diagnostic.struct_span_err(
             span,
-            format!("expected identifier, found `{}`", &token_str)
+            format!("expected identifier, found `{token_str}`")
         );
         err.span_suggestion(
             token.span,
-            format!("try removing `{}`", &token_str),
+            format!("try removing `{token_str}`"),
             "",
             Applicability::MaybeIncorrect,
         );

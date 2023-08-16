@@ -38,7 +38,7 @@ impl<'ast> LifetimeCollectVisitor<'ast> {
                     "Unexpected lifetime resolution {:?} for {:?} at {:?}",
                     res, lifetime.ident, lifetime.ident.span
                 );
-                span_bug!(lifetime.ident.span, "{}", bug_msg);
+                span_bug!(lifetime.ident.span, "{bug_msg}");
             }
         }
     }

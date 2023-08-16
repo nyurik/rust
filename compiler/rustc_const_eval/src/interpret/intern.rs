@@ -443,7 +443,7 @@ pub fn intern_const_alloc_recursive<
         } else if ecx.tcx.try_get_global_alloc(alloc_id).is_none() {
             // We have hit an `AllocId` that is neither in local or global memory and isn't
             // marked as dangling by local memory. That should be impossible.
-            span_bug!(ecx.tcx.span, "encountered unknown alloc id {:?}", alloc_id);
+            span_bug!(ecx.tcx.span, "encountered unknown alloc id {alloc_id:?}");
         }
     }
     Ok(())

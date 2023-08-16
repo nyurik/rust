@@ -98,7 +98,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
                         // No change to value
                         self.write_immediate(*src, dest)?;
                     }
-                    _ => span_bug!(self.cur_span(), "fn to unsafe fn cast on {:?}", cast_ty),
+                    _ => span_bug!(self.cur_span(), "fn to unsafe fn cast on {cast_ty:?}"),
                 }
             }
 
@@ -298,7 +298,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
             }
 
             // Casts to bool are not permitted by rustc, no need to handle them here.
-            _ => span_bug!(self.cur_span(), "invalid int to {:?} cast", cast_ty),
+            _ => span_bug!(self.cur_span(), "invalid int to {cast_ty:?} cast"),
         })
     }
 
@@ -331,7 +331,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
             // float -> f64
             Float(FloatTy::F64) => Scalar::from_f64(f.convert(&mut false).value),
             // That's it.
-            _ => span_bug!(self.cur_span(), "invalid float to {:?} cast", dest_ty),
+            _ => span_bug!(self.cur_span(), "invalid float to {dest_ty:?} cast"),
         }
     }
 

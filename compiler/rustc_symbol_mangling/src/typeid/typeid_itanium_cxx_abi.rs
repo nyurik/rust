@@ -656,7 +656,7 @@ fn encode_ty<'tcx>(
             s.push('E');
             compress(dict, DictKey::Ty(Ty::new_imm_ref(tcx, *region, *ty0), TyQ::None), &mut s);
             if ty.is_mutable_ptr() {
-                s = format!("{}{}", "U3mut", &s);
+                s = format!("U3mut{s}");
                 compress(dict, DictKey::Ty(ty, TyQ::Mut), &mut s);
             }
             typeid.push_str(&s);
@@ -667,10 +667,10 @@ fn encode_ty<'tcx>(
             let mut s = String::new();
             s.push_str(&encode_ty(tcx, tm.ty, dict, options));
             if !ty.is_mutable_ptr() {
-                s = format!("{}{}", "K", &s);
+                s = format!("K{s}");
                 compress(dict, DictKey::Ty(tm.ty, TyQ::Const), &mut s);
             };
-            s = format!("{}{}", "P", &s);
+            s = format!("P{s}");
             compress(dict, DictKey::Ty(ty, TyQ::None), &mut s);
             typeid.push_str(&s);
         }
