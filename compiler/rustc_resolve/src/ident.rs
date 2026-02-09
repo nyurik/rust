@@ -1230,16 +1230,33 @@ impl<'ra, 'tcx> Resolver<'ra, 'tcx> {
             }
         }
 
-        // Only report when the `macro_export` was produced by another macro (e.g. macro_rules!
-        // expanding to a macro_rules!), not when it merely has attributes (AstPass/Desugaring)
-        // or inert attribute processing (MacroKind::Attr).
         if shadowing == Shadowing::Unrestricted
             && binding.expansion != LocalExpnId::ROOT
             && let DeclKind::Import { import, .. } = binding.kind
             && matches!(import.kind, ImportKind::MacroExport)
-            && matches!(binding.expansion.expn_data().kind, ExpnKind::Macro(MacroKind::Bang, _))
         {
-            self.macro_expanded_macro_export_errors.insert((path_span, binding.span));
+            // Walk the expansion chain to check whether the `macro_export` macro
+            // was truly produced by a macro expansion, or merely has inert attributes
+            // (e.g., tool attributes like `#[rustfmt::skip]`).
+            //
+            // Inert attributes create non-ROOT expansion IDs but have
+            // `macro_def_id = None` (since `Res::NonMacroAttr` has no `DefId`).
+            // Real macros (bang, attribute, derive) have `macro_def_id = Some(...)`.
+            // We walk the full chain because a real macro expansion could output
+            // an item that also carries a tool attribute.
+            let mut dominated_by_macro = false;
+            let mut expn_id = binding.expansion.to_expn_id();
+            while expn_id != ExpnId::root() {
+                let expn_data = expn_id.expn_data();
+                if expn_data.macro_def_id.is_some() {
+                    dominated_by_macro = true;
+                    break;
+                }
+                expn_id = expn_data.parent;
+            }
+            if dominated_by_macro {
+                self.macro_expanded_macro_export_errors.insert((path_span, binding.span));
+            }
         }
 
         // If we encounter a re-export for a type with private fields, it will not be able to
